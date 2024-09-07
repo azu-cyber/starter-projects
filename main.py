@@ -1,27 +1,47 @@
-from tkinter import *
+import pygame
+import sys
 
-root = Tk()
-root.geometry("400x400")
+def terminate():
+    pygame.quit()
+    sys.exit()
 
-Label(root, text="your first number:").grid(row=0, column=0)
-Label(root, text="your second number:").grid(row=1, column=0)
+pygame.init()
 
-label3 = Label(root)
+black = (0,0,0)
+white = (0,0,0)
 
-label3.grid(row=3, column=1)
+clock = pygame.time.Clock()
+fps=30
 
-first_no = IntVar()
-second_no = IntVar()
+screen_height = 520
+screen_width = 650
+screen = pygame.display.set_mode(screen_width,screen_height)
 
+class Rect(pygame.sprite.Sprite):
+    def __init__(self,x,y,width,height,color,value):
+        super().__init__()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.value = value
+    def change_value(self,color,value):
+        self.image.fill(color)
+        self.value=value
+        rects = pygame.sprite.Group()
 
-entry1 = Entry(root, textvariable=first_no).grid(row=0, column=1)
-entry2 = Entry(root, textvariable=second_no).grid(row=1, column=1)
+rect = Rect(50,50,100,100,black)
+rect.add(rect)
 
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            terminate()
 
-def add():
-    sumation = first_no.get() + second_no.get()
-    label3.config(text="your final number is:" + str(sumation))
+    screen.fill(white)
+    rect.draw(screen)
 
-mybutton = Button(root, text=("Calculate!"), command=add).grid(row=2, column=1)
+    pygame.display.flip()
 
-root.mainloop()
+    clock.tick(fps)
